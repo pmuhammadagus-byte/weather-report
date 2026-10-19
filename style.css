@@ -76,7 +76,7 @@ header h1 {
   border-radius: 12px;
   font-size: 1rem;
   font-weight: 600;
-  cursor:920 pointer;
+  cursor: pointer;
   transition: opacity 0.2s;
   font-family: inherit;
 }
@@ -172,7 +172,7 @@ header h1 {
   font-size: 1.1rem;
   color: #667eea;
   font-weight: 500;
-  margin-top: atau 8px;
+  margin-top: 8px;
   text-transform: capitalize;
 }
 
