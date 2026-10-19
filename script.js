@@ -40,11 +40,88 @@ document.getElementById('cityInput').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') getWeather();
 });
 
-// === Auto-load default city ===
+// === Geolocation: auto-detect user location on load ===
 window.addEventListener('load', () => {
-  document.getElementById('cityInput').value = 'Jakarta';
-  getWeather();
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        // Got GPS coordinates — fetch weather by lat/lon directly
+        getWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
+      },
+      (err) => {
+        // User denied or error — fallback to Jakarta
+        document.getElementById('cityInput').value = 'Jakarta';
+        getWeather();
+      },
+      { timeout: 5000, enableHighAccuracy: false }
+    );
+  } else {
+    // Geolocation not supported — fallback to Jakarta
+    document.getElementById('cityInput').value = 'Jakarta';
+    getWeather();
+  }
 });
+
+// === Get weather by coordinates (for geolocation) ===
+async function getWeatherByCoords(lat, lon) {
+  showLoading(true);
+  hideError();
+  hideWeather();
+
+  try {
+    // Reverse geocode: lat/lon → city name
+    const revGeoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?latitude=${lat}&longitude=${lon}&count=1&language=id`);
+    const revGeoData = await revGeoRes.json();
+
+    let name = 'Lokasi Saya', country = '', admin1 = '';
+    if (revGeoData.results && revGeoData.results.length > 0) {
+      const r = revGeoData.results[0];
+      name = r.name || name;
+      country = r.country || '';
+      admin1 = r.admin1 || '';
+    }
+
+    // Fetch weather
+    const params = new URLSearchParams({
+      latitude: lat,
+      longitude: lon,
+      current: 'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl',
+      daily: 'weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max',
+      timezone: 'auto',
+      forecast_days: '7'
+    });
+
+    const wxRes = await fetch(`${WEATHER_URL}?${params}`);
+    const wxData = await wxRes.json();
+
+    if (!wxData.current) throw new Error('Data cuaca tidak tersedia untuk lokasi ini');
+
+    displayWeather(name, country, admin1, wxData);
+  } catch (err) {
+    // Fallback ke Jakarta jika geolocation gagal
+    document.getElementById('cityInput').value = 'Jakarta';
+    getWeather();
+  } finally {
+    showLoading(false);
+  }
+}
+
+// === Manual geolocation button ===
+function useMyLocation() {
+  if (!navigator.geolocation) {
+    showError('Browser tidak mendukung deteksi lokasi');
+    return;
+  }
+  showLoading(true);
+  navigator.geolocation.getCurrentPosition(
+    (pos) => getWeatherByCoords(pos.coords.latitude, pos.coords.longitude),
+    (err) => {
+      showLoading(false);
+      showError('Tidak bisa mendeteksi lokasi. Pastikan izin GPS aktif.');
+    },
+    { timeout: 10000, enableHighAccuracy: true }
+  );
+}
 
 async function getWeather() {
   const city = document.getElementById('cityInput').value.trim();
