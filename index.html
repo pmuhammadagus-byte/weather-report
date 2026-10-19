@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan Cuaca — Weather Report</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🌤️ Laporan Cuaca</h1>
+      <p class="subtitle">Cek cuaca kota mana pun secara real-time</p>
+    </header>
+
+    <div class="search-box">
+      <input type="text" id="cityInput" placeholder="Masukkan nama kota (mis. Jakarta, Tokyo, London)..." autocomplete="off">
+      <button id="searchBtn" onclick="getWeather()">Cari</button>
+    </div>
+
+    <div id="loading" class="loading" style="display:none;">
+      <div class="spinner"></div>
+      <p>Mencari data cuaca...</p>
+    </div>
+
+    <div id="error" class="error" style="display:none;"></div>
+
+    <div id="weatherCard" class="weather-card" style="display:none;">
+      <div class="weather-header">
+        <div>
+          <h2 id="cityName"></h2>
+          <p id="dateTime"></p>
+        </div>
+        <img id="weatherIcon" src="" alt="Weather icon">
+      </div>
+
+      <div class="weather-main">
+        <div class="temp-box">
+          <span class="temp" id="temperature"></span>
+          <span class="temp-unit">°C</span>
+        </div>
+        <div class="weather-desc" id="description"></div>
+      </div>
+
+      <div class="weather-details">
+        <div class="detail-item">
+          <span class="detail-label">💧 Kelembaban</span>
+          <span class="detail-value" id="humidity"></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">🌬️ Angin</span>
+          <span class="detail-value" id="windSpeed"></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">🌡️ Terasa</span>
+          <span class="detail-value" id="feelsLike"></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">📊 Tekanan</span>
+          <span class="detail-value" id="pressure"></span>
+        </div>
+      </div>
+
+      <div class="forecast-section">
+        <h3>📅 Prakiraan 7 Hari</h3>
+        <div id="forecastList" class="forecast-list"></div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Data: <a href="https://open-meteo.com" target="_blank">Open-Meteo API</a> • Dibuat dengan ❤️ oleh OpenClaw</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
