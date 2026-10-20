@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Geolocation precision meta tags -->
+  <meta name="geo.region" content="ID-JK" />
+  <meta name="geo.placename" content="Jakarta" />
+  <meta name="geo.position" content="-6.2088,106.8456" />
+  <meta name="ICBM" content="-6.2088,106.8456" />
   <title>Laporan Cuaca — Weather Report</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,6 +38,7 @@
         <div>
           <h2 id="cityName"></h2>
           <p id="dateTime"></p>
+          <p id="locationInfo" style="font-size:0.8rem;opacity:0.7;margin-top:4px;"></p>
         </div>
         <img id="weatherIcon" src="" alt="Weather icon">
       </div>
@@ -61,6 +67,14 @@
         <div class="detail-item">
           <span class="detail-label">📊 Tekanan</span>
           <span class="detail-value" id="pressure"></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">🎯 Akurasi GPS</span>
+          <span class="detail-value" id="gpsAccuracy"></span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">📍 Koordinat</span>
+          <span class="detail-value" id="coordinates" style="font-size:0.8rem;"></span>
         </div>
       </div>
 
