@@ -40,20 +40,20 @@ document.getElementById('cityInput').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') getWeather();
 });
 
-// === Geolocation: auto-detect user location on load ===
+// === Geolocation: auto-detect user location on load (HIGH PRECISION) ===
 window.addEventListener('load', () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         // Got GPS coordinates — fetch weather by lat/lon directly
-        getWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
+        getWeatherByCoords(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
       },
       (err) => {
         // User denied or error — fallback to Jakarta
         document.getElementById('cityInput').value = 'Jakarta';
         getWeather();
       },
-      { timeout: 5000, enableHighAccuracy: false }
+      { timeout: 15000, enableHighAccuracy: true, maximumAge: 0 }
     );
   } else {
     // Geolocation not supported — fallback to Jakarta
@@ -63,7 +63,7 @@ window.addEventListener('load', () => {
 });
 
 // === Get weather by coordinates (for geolocation) ===
-async function getWeatherByCoords(lat, lon) {
+async function getWeatherByCoords(lat, lon, accuracy) {
   showLoading(true);
   hideError();
   hideWeather();
@@ -96,7 +96,7 @@ async function getWeatherByCoords(lat, lon) {
 
     if (!wxData.current) throw new Error('Data cuaca tidak tersedia untuk lokasi ini');
 
-    displayWeather(name, country, admin1, wxData);
+    displayWeather(name, country, admin1, wxData, lat, lon, accuracy);
   } catch (err) {
     // Fallback ke Jakarta jika geolocation gagal
     document.getElementById('cityInput').value = 'Jakarta';
@@ -106,7 +106,7 @@ async function getWeatherByCoords(lat, lon) {
   }
 }
 
-// === Manual geolocation button ===
+// === Manual geolocation button (HIGH PRECISION) ===
 function useMyLocation() {
   if (!navigator.geolocation) {
     showError('Browser tidak mendukung deteksi lokasi');
@@ -114,12 +114,12 @@ function useMyLocation() {
   }
   showLoading(true);
   navigator.geolocation.getCurrentPosition(
-    (pos) => getWeatherByCoords(pos.coords.latitude, pos.coords.longitude),
+    (pos) => getWeatherByCoords(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy),
     (err) => {
       showLoading(false);
       showError('Tidak bisa mendeteksi lokasi. Pastikan izin GPS aktif.');
     },
-    { timeout: 10000, enableHighAccuracy: true }
+    { timeout: 15000, enableHighAccuracy: true, maximumAge: 0 }
   );
 }
 
@@ -159,7 +159,7 @@ async function getWeather() {
       throw new Error('Data cuaca tidak tersedia untuk lokasi ini');
     }
 
-    displayWeather(name, country, admin1, wxData);
+    displayWeather(name, country, admin1, wxData, latitude, longitude, null);
   } catch (err) {
     showError(err.message);
   } finally {
@@ -167,7 +167,7 @@ async function getWeather() {
   }
 }
 
-function displayWeather(name, country, admin1, data) {
+function displayWeather(name, country, admin1, data, lat, lon, accuracy) {
   const cur = data.current;
   const daily = data.daily;
 
@@ -177,6 +177,16 @@ function displayWeather(name, country, admin1, data) {
   document.getElementById('dateTime').textContent = now.toLocaleString('id-ID', {
     weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit'
   });
+
+  // Location info (nama lokasi + koordinat)
+  const locInfo = document.getElementById('locationInfo');
+  if (accuracy !== null && accuracy !== undefined) {
+    // GPS detected
+    locInfo.textContent = `📍 ${name}, ${admin1 || country} • ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+  } else {
+    // Manual search
+    locInfo.textContent = `📍 ${name}, ${admin1 || country}`;
+  }
 
   // WMO code
   const wmo = WMO_CODES[cur.weather_code] || { desc: 'Tidak diketahui', icon: '❓' };
@@ -189,7 +199,6 @@ function displayWeather(name, country, admin1, data) {
   const iconEl = document.getElementById('weatherIcon');
   iconEl.src = '';
   iconEl.style.display = 'none';
-  // Create emoji icon element
   let emojiEl = document.querySelector('.weather-emoji');
   if (!emojiEl) {
     emojiEl = document.createElement('span');
@@ -204,6 +213,20 @@ function displayWeather(name, country, admin1, data) {
   document.getElementById('windSpeed').textContent = `${Math.round(cur.wind_speed_10m)} km/h`;
   document.getElementById('feelsLike').textContent = `${Math.round(cur.apparent_temperature)}°C`;
   document.getElementById('pressure').textContent = `${Math.round(cur.pressure_msl)} hPa`;
+
+  // GPS Accuracy
+  const gpsEl = document.getElementById('gpsAccuracy');
+  if (accuracy !== null && accuracy !== undefined) {
+    const accM = Math.round(accuracy);
+    if (accM < 50) gpsEl.textContent = `Tinggi (±${accM}m)`;
+    else if (accM < 200) gpsEl.textContent = `Sedang (±${accM}m)`;
+    else gpsEl.textContent = `Rendah (±${accM}m)`;
+  } else {
+    gpsEl.textContent = '— (cari manual)';
+  }
+
+  // Coordinates
+  document.getElementById('coordinates').textContent = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
 
   // Forecast
   const forecastList = document.getElementById('forecastList');
