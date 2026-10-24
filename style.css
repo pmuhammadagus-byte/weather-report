@@ -26,12 +26,13 @@ body {
   background: var(--bg);
   color: var(--text);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   min-height: 100vh;
   padding: 24px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow-y: auto;
 }
 
 .app {
