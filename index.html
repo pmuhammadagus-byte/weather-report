@@ -3,90 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Geolocation precision meta tags -->
   <meta name="geo.region" content="ID-JK" />
   <meta name="geo.placename" content="Jakarta" />
   <meta name="geo.position" content="-6.2088,106.8456" />
   <meta name="ICBM" content="-6.2088,106.8456" />
-  <title>Laporan Cuaca — Weather Report</title>
+  <title>Cuaca — Weather Report</title>
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>🌤️ Laporan Cuaca</h1>
-      <p class="subtitle">Cek cuaca kota mana pun secara real-time</p>
-    </header>
+  <div class="app">
+    <div class="card">
+      <header class="card-header">
+        <div class="brand">
+          <span class="brand-mark">◐</span>
+          <div>
+            <div class="brand-name">Cuaca</div>
+            <div class="brand-tag">Laporan cuaca real-time</div>
+          </div>
+        </div>
+      </header>
 
-    <div class="search-box">
-      <input type="text" id="cityInput" placeholder="Masukkan nama kota (mis. Jakarta, Tokyo, London)..." autocomplete="off">
-      <button id="searchBtn" onclick="getWeather()">Cari</button>
-      <button id="geoBtn" onclick="useMyLocation()" title="Deteksi lokasi otomatis">📍</button>
+      <div class="card-body">
+        <div class="search">
+          <input type="text" id="cityInput" placeholder="Kota (mis. Jakarta, Tokyo, London)" autocomplete="off">
+          <button id="searchBtn" type="button">Cari</button>
+          <button id="geoBtn" type="button" title="Deteksi lokasi">📍</button>
+        </div>
+
+        <div id="loading" class="loader" style="display:none;">
+          <div class="loader-bar"></div>
+          <div class="loader-bar"></div>
+          <div class="loader-bar"></div>
+          <p class="loader-text">Memuat data cuaca…</p>
+        </div>
+
+        <div id="error" class="alert" style="display:none;"></div>
+
+        <div id="weatherCard" class="weather" style="display:none;">
+          <div class="weather-head">
+            <div class="weather-info">
+              <h1 id="cityName"></h1>
+              <p id="dateTime"></p>
+              <p id="locationInfo" class="meta"></p>
+            </div>
+            <div class="weather-icon-large" id="weatherIcon"></div>
+          </div>
+
+          <div class="weather-main">
+            <div class="temp">
+              <span id="temperature">--</span><span class="unit">°C</span>
+            </div>
+            <p id="description" class="condition"></p>
+          </div>
+
+          <div class="details-grid">
+            <div class="detail">
+              <span class="detail-label">Kelembaban</span>
+              <span class="detail-value" id="humidity">--</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Angin</span>
+              <span class="detail-value" id="windSpeed">--</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Terasa seperti</span>
+              <span class="detail-value" id="feelsLike">--</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Tekanan</span>
+              <span class="detail-value" id="pressure">--</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Akurasi GPS</span>
+              <span class="detail-value" id="gpsAccuracy">--</span>
+            </div>
+            <div class="detail">
+              <span class="detail-label">Koordinat</span>
+              <span class="detail-value" id="coordinates" style="font-size:0.75rem;">--</span>
+            </div>
+          </div>
+
+          <div class="forecast">
+            <h2 class="section-title">Prakiraan 7 Hari</h2>
+            <div id="forecastList" class="forecast-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="card-footer">
+        <p class="footer-text">Data dari <a href="https://open-meteo.com" target="_blank">Open-Meteo API</a></p>
+      </footer>
     </div>
-
-    <div id="loading" class="loading" style="display:none;">
-      <div class="spinner"></div>
-      <p>Mencari data cuaca...</p>
-    </div>
-
-    <div id="error" class="error" style="display:none;"></div>
-
-    <div id="weatherCard" class="weather-card" style="display:none;">
-      <div class="weather-header">
-        <div>
-          <h2 id="cityName"></h2>
-          <p id="dateTime"></p>
-          <p id="locationInfo" style="font-size:0.8rem;opacity:0.7;margin-top:4px;"></p>
-        </div>
-        <img id="weatherIcon" src="" alt="Weather icon">
-      </div>
-
-      <div class="weather-main">
-        <div class="temp-box">
-          <span class="temp" id="temperature"></span>
-          <span class="temp-unit">°C</span>
-        </div>
-        <div class="weather-desc" id="description"></div>
-      </div>
-
-      <div class="weather-details">
-        <div class="detail-item">
-          <span class="detail-label">💧 Kelembaban</span>
-          <span class="detail-value" id="humidity"></span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">🌬️ Angin</span>
-          <span class="detail-value" id="windSpeed"></span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">🌡️ Terasa</span>
-          <span class="detail-value" id="feelsLike"></span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">📊 Tekanan</span>
-          <span class="detail-value" id="pressure"></span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">🎯 Akurasi GPS</span>
-          <span class="detail-value" id="gpsAccuracy"></span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">📍 Koordinat</span>
-          <span class="detail-value" id="coordinates" style="font-size:0.8rem;"></span>
-        </div>
-      </div>
-
-      <div class="forecast-section">
-        <h3>📅 Prakiraan 7 Hari</h3>
-        <div id="forecastList" class="forecast-list"></div>
-      </div>
-    </div>
-
-    <footer>
-      <p>Data: <a href="https://open-meteo.com" target="_blank">Open-Meteo API</a> • Dibuat dengan ❤️ oleh OpenClaw</p>
-    </footer>
   </div>
 
   <script src="script.js"></script>

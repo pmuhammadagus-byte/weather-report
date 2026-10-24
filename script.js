@@ -197,16 +197,7 @@ function displayWeather(name, country, admin1, data, lat, lon, accuracy) {
 
   // Icon (emoji as text since Open-Meteo doesn't provide icon images)
   const iconEl = document.getElementById('weatherIcon');
-  iconEl.src = '';
-  iconEl.style.display = 'none';
-  let emojiEl = document.querySelector('.weather-emoji');
-  if (!emojiEl) {
-    emojiEl = document.createElement('span');
-    emojiEl.className = 'weather-emoji';
-    emojiEl.style.fontSize = '3rem';
-    document.querySelector('.weather-main').insertBefore(emojiEl, document.querySelector('.temp-box'));
-  }
-  emojiEl.textContent = wmo.icon;
+  iconEl.textContent = wmo.icon;
 
   // Details
   document.getElementById('humidity').textContent = `${cur.relative_humidity_2m}%`;
