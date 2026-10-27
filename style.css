@@ -2,17 +2,17 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: radial-gradient(1200px 800px at 50% 0%, #1f2937 0%, #0b1020 55%, #05070d 100%);
-  --card: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%);
-  --text: #e5e7eb;
-  --text-muted: #9ca3af;
-  --accent: #60a5fa;
-  --accent-hover: #3b82f6;
-  --border: rgba(255,255,255,0.08);
-  --shadow: 0 10px 40px rgba(2, 6, 23, 0.6), inset 0 1px 0 rgba(255,255,255,0.04);
+  --bg: radial-gradient(1200px 800px at 50% 0%, #3d2b1f 0%, #1a1208 55%, #0d0804 100%);
+  --card: linear-gradient(180deg, rgba(212,175,55,0.08) 0%, rgba(139,90,43,0.04) 100%);
+  --text: #f5e6c8;
+  --text-muted: #c9a96e;
+  --accent: #d4af37;
+  --accent-hover: #b8960c;
+  --border: rgba(212,175,55,0.15);
+  --shadow: 0 10px 40px rgba(13, 8, 4, 0.6), inset 0 1px 0 rgba(212,175,55,0.06);
   --radius: 18px;
-  --surface: rgba(255,255,255,0.04);
-  --surface-strong: rgba(255,255,255,0.06);
+  --surface: rgba(212,175,55,0.06);
+  --surface-strong: rgba(212,175,55,0.10);
 }
 
 html, body { height: 100%; }
@@ -52,10 +52,10 @@ body {
 
 .brand-mark {
   width: 36px; height: 36px; border-radius: 10px;
-  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  background: linear-gradient(135deg, #d4af37, #8b5a2b);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.35rem; color: #fff;
-  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.35);
+  font-size: 1.35rem; color: #1a1208;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.45);
 }
 
 .brand-name { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
@@ -72,7 +72,7 @@ body {
   transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
 #cityInput::placeholder { color: var(--text-muted); }
-#cityInput:focus { outline: none; border-color: var(--accent); background: var(--surface-strong); box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15); }
+#cityInput:focus { outline: none; border-color: var(--accent); background: var(--surface-strong); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); }
 
 #searchBtn {
   padding: 10px 18px; border: 1px solid var(--border); border-radius: 10px;
@@ -111,7 +111,7 @@ body {
 .weather-info h1 { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; color: var(--text); }
 #dateTime { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
 .meta { font-size: 0.8rem; color: var(--text-muted); }
-.weather-icon-large { font-size: 4rem; line-height: 1; filter: drop-shadow(0 4px 12px rgba(96, 165, 250, 0.3)); }
+.weather-icon-large { font-size: 4rem; line-height: 1; filter: drop-shadow(0 4px 12px rgba(212, 175, 55, 0.35)); }
 
 .weather-main { text-align: center; margin-bottom: 24px; }
 .temp { font-size: 3.5rem; font-weight: 300; line-height: 1; margin-bottom: 4px; color: var(--text); }
