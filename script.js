@@ -35,30 +35,20 @@ const WMO_CODES = {
   99: { desc: 'Badai petir + hujan es',  icon: '⛈️' },
 };
 
-// === Enter key support ===
-document.getElementById('cityInput').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') getWeather();
-});
-
 // === Geolocation: auto-detect user location on load (HIGH PRECISION) ===
 window.addEventListener('load', () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        // Got GPS coordinates — fetch weather by lat/lon directly
         getWeatherByCoords(pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy);
       },
       (err) => {
-        // User denied or error — fallback to Jakarta
-        document.getElementById('cityInput').value = 'Jakarta';
-        getWeather();
+        showError('Tidak bisa mendeteksi lokasi. Tekan tombol deteksi lokasi.');
       },
       { timeout: 15000, enableHighAccuracy: true, maximumAge: 0 }
     );
   } else {
-    // Geolocation not supported — fallback to Jakarta
-    document.getElementById('cityInput').value = 'Jakarta';
-    getWeather();
+    showError('Browser tidak mendukung deteksi lokasi.');
   }
 });
 
@@ -98,13 +88,14 @@ async function getWeatherByCoords(lat, lon, accuracy) {
 
     displayWeather(name, country, admin1, wxData, lat, lon, accuracy);
   } catch (err) {
-    // Fallback ke Jakarta jika geolocation gagal
-    document.getElementById('cityInput').value = 'Jakarta';
-    getWeather();
+    showError(err.message);
   } finally {
     showLoading(false);
   }
 }
+
+// === Wire geo button ===
+document.getElementById('geoBtn').addEventListener('click', useMyLocation);
 
 // === Manual geolocation button (HIGH PRECISION) ===
 function useMyLocation() {
@@ -121,50 +112,6 @@ function useMyLocation() {
     },
     { timeout: 15000, enableHighAccuracy: true, maximumAge: 0 }
   );
-}
-
-async function getWeather() {
-  const city = document.getElementById('cityInput').value.trim();
-  if (!city) return;
-
-  showLoading(true);
-  hideError();
-  hideWeather();
-
-  try {
-    // Step 1: Geocode city name → lat/lon
-    const geoRes = await fetch(`${GEO_URL}?name=${encodeURIComponent(city)}&count=1&language=id`);
-    const geoData = await geoRes.json();
-
-    if (!geoData.results || geoData.results.length === 0) {
-      throw new Error(`Kota "${city}" tidak ditemukan`);
-    }
-
-    const { latitude, longitude, name, country, admin1 } = geoData.results[0];
-
-    // Step 2: Fetch weather data
-    const params = new URLSearchParams({
-      latitude: latitude,
-      longitude: longitude,
-      current: 'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,pressure_msl',
-      daily: 'weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max',
-      timezone: 'auto',
-      forecast_days: '7'
-    });
-
-    const wxRes = await fetch(`${WEATHER_URL}?${params}`);
-    const wxData = await wxRes.json();
-
-    if (!wxData.current) {
-      throw new Error('Data cuaca tidak tersedia untuk lokasi ini');
-    }
-
-    displayWeather(name, country, admin1, wxData, latitude, longitude, null);
-  } catch (err) {
-    showError(err.message);
-  } finally {
-    showLoading(false);
-  }
 }
 
 function displayWeather(name, country, admin1, data, lat, lon, accuracy) {
