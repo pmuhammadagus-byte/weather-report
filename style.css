@@ -83,12 +83,17 @@ body {
 #searchBtn:active { transform: translateY(1px); }
 
 #geoBtn {
-  width: 40px; padding: 0; border: 1px solid var(--border); border-radius: 10px;
-  background: var(--surface); font-size: 1rem; cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
+  width: 100%; padding: 14px 20px; border: 1px solid var(--border); border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: #1a1208; font-size: 1rem; font-weight: 600; font-family: inherit;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: transform 0.15s, box-shadow 0.2s, filter 0.2s;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35);
 }
-#geoBtn:hover { background: var(--surface-strong); }
+#geoBtn:hover { filter: brightness(1.1); box-shadow: 0 6px 20px rgba(212, 175, 55, 0.45); }
 #geoBtn:active { transform: translateY(1px); }
+#geoBtn .geo-icon { font-size: 1.25rem; }
+#geoBtn .geo-label { letter-spacing: 0.02em; }
 
 .loader { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 32px 0; }
 .loader-bar { width: 28px; height: 4px; background: var(--border); border-radius: 2px; animation: pulse 1.4s infinite ease-in-out; }
