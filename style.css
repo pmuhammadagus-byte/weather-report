@@ -153,6 +153,18 @@ body {
 .footer-text a { color: var(--accent); text-decoration: none; font-weight: 500; }
 .footer-text a:hover { text-decoration: underline; }
 
+.install-btn {
+  width: 100%; max-width: 380px; margin: 16px auto 0; padding: 14px 20px;
+  border: 1px solid var(--card-border); border-radius: 14px;
+  background: var(--glass-strong); color: var(--text); font-size: 0.95rem; font-weight: 600;
+  font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: transform 0.15s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.install-btn:hover { background: var(--glass); border-color: var(--accent-dim); box-shadow: 0 8px 20px rgba(212, 175, 55, 0.25); }
+.install-btn:active { transform: translateY(2px); }
+
 @media (max-width: 400px) {
   body { padding: 16px; }
   .app { max-width: 100%; }
